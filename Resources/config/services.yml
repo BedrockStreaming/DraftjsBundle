@@ -1,0 +1,16 @@
+services:
+    m6_web_draftjs.content_state_converter:
+        class: M6Web\Bundle\DraftjsBundle\Converter\ContentStateConverter
+
+    m6_web_draftjs.html_builder:
+        class: M6Web\Bundle\DraftjsBundle\Builder\HtmlBuilder
+        arguments:
+            - '@templating'
+            - []
+            - []
+
+    m6_web_draftjs.html_renderer:
+        class: M6Web\Bundle\DraftjsBundle\Renderer\HtmlRenderer
+        arguments:
+            - '@m6_web_draftjs.content_state_converter'
+            - '@m6_web_draftjs.html_builder'

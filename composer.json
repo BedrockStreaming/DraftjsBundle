@@ -1,0 +1,32 @@
+{
+    "name": "m6web/draftjs-bundle",
+    "description": "Render Draft.js state to HTML",
+    "type": "symfony-bundle",
+    "keywords": ["Draft.js", "PHP", "bundle", "symfony"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "M6Web",
+            "email": "opensource@m6web.fr",
+            "homepage": "http://tech.m6web.fr/"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+        "symfony/framework-bundle": "~2.7|~3.0",
+        "symfony/templating": "~2.8|~3.0"
+    },
+    "require-dev": {
+        "atoum/atoum": "~2.1",
+        "m6web/coke": "~2.1",
+        "m6web/symfony2-coding-standard": "~3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "M6Web\\Bundle\\DraftjsBundle\\": ""
+        }
+    },
+    "config": {
+        "bin-dir": "bin/"
+    }
+}

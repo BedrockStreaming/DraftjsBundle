@@ -1,0 +1,22 @@
+language: php
+
+php:
+    - 5.6
+
+branches:
+  only:
+    - master
+
+before_install:
+  # disable xdebug
+  - phpenv config-rm xdebug.ini
+
+install:
+    - composer install
+
+script:
+    - bin/atoum
+
+after_script:
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover clover.xml

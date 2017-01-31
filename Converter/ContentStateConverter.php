@@ -27,11 +27,11 @@ class ContentStateConverter implements ConverterInterface
     public function convertFromRaw(array $raw = [])
     {
         if (!isset($raw['entityMap'])) {
-            throw new DraftjsException('Raw undefined entityMap key');
+            throw new DraftjsException('ContentStateConverter undefined entityMap key not allowed');
         }
 
         if (!isset($raw['blocks'])) {
-            throw new DraftjsException('Raw undefined blocks key');
+            throw new DraftjsException('ContentStateConverter undefined blocks key not allowed');
         }
 
         $contentState = new ContentState();
@@ -65,10 +65,7 @@ class ContentStateConverter implements ConverterInterface
             $mutability = $rawEntity['mutability'];
             $data = $rawEntity['data'];
 
-            $entity = new DraftEntity();
-            $entity->setType($type);
-            $entity->setMutability($mutability);
-            $entity->setData($data);
+            $entity = new DraftEntity($type, $mutability, $data);
 
             $entities[] = $entity;
 

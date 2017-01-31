@@ -15,12 +15,18 @@ class ContentBlock
     const HEADER_ONE = 'header-one';
     const HEADER_TWO = 'header-two';
     const HEADER_THREE = 'header-three';
+    const ATOMIC = 'atomic';
+    const UNORDERED_LIST = 'unordered-list-item';
+    const ORDERED_LIST = 'ordered-list-item';
 
     const TYPES = [
         self::UNSTYLED,
         self::HEADER_ONE,
         self::HEADER_TWO,
         self::HEADER_THREE,
+        self::ATOMIC,
+        self::UNORDERED_LIST,
+        self::ORDERED_LIST,
     ];
 
     /**
@@ -66,11 +72,11 @@ class ContentBlock
     public function __construct($key = null, $type = self::UNSTYLED, $text = '', array $characterList = [], $depth = 0, array $data = [])
     {
         $this->key = $key;
-        $this->type = $type;
+        $this->type = strtolower($type);
         $this->text = $text;
         $this->characterList = $characterList;
         $this->depth = $depth;
-        $this->data = [];
+        $this->data = $data;
     }
 
     /**
@@ -110,10 +116,10 @@ class ContentBlock
     public function setType($type)
     {
         if (!self::supportsType($type)) {
-            throw new DraftjsException(sprintf('Unsupported type %s', $type));
+            throw new DraftjsException(sprintf('ContentBlock unsupported type "%s"', $type));
         }
 
-        $this->type = $type;
+        $this->type = strtolower($type);
 
         return $this;
     }
@@ -202,9 +208,15 @@ class ContentBlock
      * @param string $type
      *
      * @return bool
+     *
+     * @throws DraftjsException
      */
     public static function supportsType($type)
     {
-        return in_array($type, self::TYPES);
+        if (is_null($type) || empty($type)) {
+            throw new DraftjsException('DraftEntity null or empty mutability not allowed');
+        }
+
+        return in_array(strtolower($type), self::TYPES);
     }
 }

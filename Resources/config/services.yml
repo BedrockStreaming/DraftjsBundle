@@ -1,14 +1,83 @@
 services:
+    # converter
     m6_web_draftjs.content_state_converter:
         class: M6Web\Bundle\DraftjsBundle\Converter\ContentStateConverter
 
+    # guesser
+    m6_web_draftjs.block_guesser:
+        class: M6Web\Bundle\DraftjsBundle\Guesser\BlockGuesser
+
+    m6_web_draftjs.block_entity_guesser:
+        class: M6Web\Bundle\DraftjsBundle\Guesser\BlockEntityGuesser
+
+    m6_web_draftjs.inline_entity_guesser:
+        class: M6Web\Bundle\DraftjsBundle\Guesser\InlineEntityGuesser
+
+    # builder
     m6_web_draftjs.html_builder:
         class: M6Web\Bundle\DraftjsBundle\Builder\HtmlBuilder
         arguments:
-            - '@templating'
-            - []
-            - []
+            - '@m6_web_draftjs.block_guesser'
 
+    # content renderer
+    m6_web_draftjs.content_renderer:
+        class: M6Web\Bundle\DraftjsBundle\Renderer\Content\ContentRenderer
+        arguments:
+            - '@m6_web_draftjs.inline_entity_guesser'
+
+    # abstract renderers
+    m6_web_draft_js.abstract_block_renderer:
+        abstract: true
+        arguments:
+            - '@m6_web_draftjs.content_renderer'
+            - '@templating'
+
+    m6_web_draft_js.abstract_block_entity_renderer:
+        abstract: true
+        arguments:
+            - '@templating'
+
+    # blocks renderers
+    m6_web_draftjs.default_block_renderer:
+        class: M6Web\Bundle\DraftjsBundle\Renderer\Block\DefaultBlockRenderer
+        parent: m6_web_draft_js.abstract_block_renderer
+        calls:
+            - [setTemplate, ['M6WebDraftjsBundle:Block:default.html.twig']]
+        tags:
+            - { name: draftjs.block_renderer, alias: draftjs_default_block_renderer }
+
+    m6_web_draftjs.heading_block_renderer:
+        class: M6Web\Bundle\DraftjsBundle\Renderer\Block\HeadingBlockRenderer
+        parent: m6_web_draft_js.abstract_block_renderer
+        calls:
+            - [setTemplate, ['M6WebDraftjsBundle:Block:heading.html.twig']]
+        tags:
+            - { name: draftjs.block_renderer, alias: draftjs_heading_block_renderer }
+
+    m6_web_draftjs.atomic_block_renderer:
+        class: M6Web\Bundle\DraftjsBundle\Renderer\Block\AtomicBlockRenderer
+        parent: m6_web_draft_js.abstract_block_renderer
+        calls:
+            - [setBlockEntityGuesser, ['@m6_web_draftjs.block_entity_guesser']]
+            - [setTemplate, ['M6WebDraftjsBundle:Block:default.html.twig']]
+        tags:
+            - { name: draftjs.block_renderer, alias: draftjs_atomic_block_renderer }
+
+    m6_web_draftjs.list_block_renderer:
+        class: M6Web\Bundle\DraftjsBundle\Renderer\Block\ListBlockRenderer
+        parent: m6_web_draft_js.abstract_block_renderer
+        tags:
+            - { name: draftjs.block_renderer, alias: draftjs_list_block_renderer }
+
+    m6_web_draftjs.blockquote_block_renderer:
+        class: M6Web\Bundle\DraftjsBundle\Renderer\Block\BlockquoteBlockRenderer
+        parent: m6_web_draft_js.abstract_block_renderer
+        calls:
+            - [setTemplate, ['M6WebDraftjsBundle:Block:default.html.twig']]
+        tags:
+            - { name: draftjs.block_renderer, alias: draftjs_blockquote_block_renderer }
+
+    # engine renderer
     m6_web_draftjs.html_renderer:
         class: M6Web\Bundle\DraftjsBundle\Renderer\HtmlRenderer
         arguments:

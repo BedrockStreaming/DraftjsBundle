@@ -25,34 +25,50 @@ class M6WebDraftjsExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        if ($config['classNames']) {
-            $this->addCustomClassNamesBuilder($container, $config['classNames']);
-        }
-
-        if ($config['blocks']) {
-            $this->addCustomBlocksBuilder($container, $config['blocks']);
-        }
+        $this->addCustomClassNames($container, $config['class_names']);
     }
 
     /**
      * @param ContainerBuilder $container
      * @param array $classNames
      */
-    protected function addCustomClassNamesBuilder(ContainerBuilder $container, array $classNames)
+    protected function addCustomClassNames(ContainerBuilder $container, array $classNames)
     {
         $container
-            ->findDefinition('m6_web_draftjs.html_builder')
-            ->addMethodCall("setCustomClassNames", [$classNames]);
-    }
+            ->findDefinition('m6_web_draftjs.atomic_block_renderer')
+            ->addMethodCall('setBlockClassName', [$classNames['blocks']['atomic']])
+            ->addMethodCall('setTextAlignmentClassNames', [$classNames['text_alignment']])
+        ;
 
-    /**
-     * @param ContainerBuilder $container
-     * @param array $blocks
-     */
-    protected function addCustomBlocksBuilder(ContainerBuilder $container, array $blocks)
-    {
         $container
-            ->findDefinition('m6_web_draftjs.html_builder')
-            ->addMethodCall("setCustomBlocks", [$blocks]);
+            ->findDefinition('m6_web_draftjs.default_block_renderer')
+            ->addMethodCall('setBlockClassName', [$classNames['blocks']['default']])
+            ->addMethodCall('setTextAlignmentClassNames', [$classNames['text_alignment']])
+        ;
+
+        $container
+            ->findDefinition('m6_web_draftjs.list_block_renderer')
+            ->addMethodCall('setBlockClassName', [$classNames['blocks']['list']])
+            ->addMethodCall('setTextAlignmentClassNames', [$classNames['text_alignment']])
+        ;
+
+        $container
+            ->findDefinition('m6_web_draftjs.heading_block_renderer')
+            ->addMethodCall('setBlockClassName', [$classNames['blocks']['heading']])
+            ->addMethodCall('setTextAlignmentClassNames', [$classNames['text_alignment']])
+        ;
+
+        $container
+            ->findDefinition('m6_web_draftjs.blockquote_block_renderer')
+            ->addMethodCall('setBlockClassName', [$classNames['blocks']['blockquote']])
+            ->addMethodCall('setTextAlignmentClassNames', [$classNames['text_alignment']])
+        ;
+
+        if (!empty($classNames['inline'])) {
+            $container
+                ->findDefinition('m6_web_draftjs.content_renderer')
+                ->addMethodCall('setInlineClassNames', [$classNames['inline']])
+            ;
+        }
     }
 }

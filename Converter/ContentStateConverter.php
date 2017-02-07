@@ -11,7 +11,7 @@ use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
 /**
  * Class ContentStateConverter
  *
- * @package M6Web\Bundle\DraftjsBundle\Model
+ * @package M6Web\Bundle\DraftjsBundle\Converter
  */
 class ContentStateConverter implements ConverterInterface
 {
@@ -27,11 +27,11 @@ class ContentStateConverter implements ConverterInterface
     public function convertFromRaw(array $raw = [])
     {
         if (!isset($raw['entityMap'])) {
-            throw new DraftjsException('Raw undefined entityMap key');
+            throw new DraftjsException('Undefined entityMap key not allowed');
         }
 
         if (!isset($raw['blocks'])) {
-            throw new DraftjsException('Raw undefined blocks key');
+            throw new DraftjsException('Undefined blocks key not allowed');
         }
 
         $contentState = new ContentState();
@@ -53,22 +53,11 @@ class ContentStateConverter implements ConverterInterface
     private function decodeEntitiesFromRaw(array $entityMap = [])
     {
         $createEntityFromRaw = function ($entities, $rawEntity) {
-            if (!DraftEntity::supportsType($rawEntity['type'])) {
-                throw new DraftjsException(sprintf('Unsupported entity type "%s"', $rawEntity['type']));
-            }
-
-            if (!DraftEntity::supportsMutability($rawEntity['mutability'])) {
-                throw new DraftjsException(sprintf('Unsupported entity mutability "%s"', $rawEntity['type']));
-            }
-
             $type = $rawEntity['type'];
             $mutability = $rawEntity['mutability'];
             $data = $rawEntity['data'];
 
-            $entity = new DraftEntity();
-            $entity->setType($type);
-            $entity->setMutability($mutability);
-            $entity->setData($data);
+            $entity = new DraftEntity($type, $mutability, $data);
 
             $entities[] = $entity;
 
@@ -87,10 +76,6 @@ class ContentStateConverter implements ConverterInterface
     private function decodeBlocksFromRaw(array $blocks = [], array $entities = [])
     {
         $createBlockFromRaw = function ($contentBlocks, $block) use ($entities) {
-            if (!ContentBlock::supportsType($block['type'])) {
-                throw new DraftjsException(sprintf('Unsupported block type "%s"', $block['type']));
-            }
-
             $entities = $this->decodeEntityRanges($block);
             $styles = $this->decodeInlineStyleRanges($block);
 
@@ -126,13 +111,13 @@ class ContentStateConverter implements ConverterInterface
             foreach ($block['entityRanges'] as $entityRange) {
                 $offset = $entityRange['offset'];
                 $length = $entityRange['length'];
-                $entityKey = $entityRange['key'];
+                $entityIndex = $entityRange['key'];
 
                 $start = mb_strlen(mb_substr($text, 0, $offset));
                 $end = $start + mb_strlen(mb_substr($text, $offset, $length));
 
                 for ($i = $start; $i < $end; $i++) {
-                    $entities[$i] = $entityKey;
+                    $entities[$i] = $entityIndex;
                 }
             }
         }
@@ -174,7 +159,7 @@ class ContentStateConverter implements ConverterInterface
      *
      * @return null|string
      */
-    private function generateCharacterMetadataHash(array $styles = [], $entity = null)
+    private function generateCharacterMetadataHash(array $styles = [], $index = null)
     {
         $hash = null;
 
@@ -182,8 +167,8 @@ class ContentStateConverter implements ConverterInterface
             $hash .= implode('-', $styles);
         }
 
-        if (!is_null($entity)) {
-            $hash .= strlen($hash) > 0 ? '-'.$entity : $entity;
+        if (!is_null($index)) {
+            $hash .= strlen($hash) > 0 ? '-'.$index : $index;
         }
 
         return $hash;
@@ -198,21 +183,25 @@ class ContentStateConverter implements ConverterInterface
      */
     private function createCharacterList($text = '', array $styles = [], array $entities = [])
     {
+        if ('' === $text) {
+            return [];
+        }
+
         $listCharacterMetadata = [];
         $handledCharacterMetadata = [];
 
         $chars = str_split($text);
 
         foreach ($chars as $index => $char) {
-            $charEntity = $entities[$index];
+            $charEntityIndex = $entities[$index];
             $charStyles = $styles[$index];
 
-            $hash = $this->generateCharacterMetadataHash($charStyles, $charEntity);
+            $hash = $this->generateCharacterMetadataHash($charStyles, $charEntityIndex);
 
             if (array_key_exists($hash, $handledCharacterMetadata)) {
                 $characterMetadata = $handledCharacterMetadata[$hash];
             } else {
-                $characterMetadata = new CharacterMetadata($charStyles, $charEntity);
+                $characterMetadata = new CharacterMetadata($charStyles, $charEntityIndex);
             }
 
             $listCharacterMetadata[] = $characterMetadata;

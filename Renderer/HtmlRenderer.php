@@ -10,7 +10,7 @@ use M6Web\Bundle\DraftjsBundle\Builder\BuilderInterface;
  *
  * @package M6Web\Bundle\DraftjsBundle\Renderer
  */
-class HtmlRenderer implements RendererInterface
+class HtmlRenderer implements EngineRendererInterface
 {
     /**
      * @var ConverterInterface
@@ -35,12 +35,12 @@ class HtmlRenderer implements RendererInterface
     }
 
     /**
-     * @param array $raw
+     * @param array $rawState
      *
      * @return string
      */
-    public function render(array $raw = [])
+    public function render(array $rawState)
     {
-        return $this->builder->build($this->converter->convertFromRaw($raw));
+        return $this->builder->build($this->converter->convertFromRaw($rawState));
     }
 }

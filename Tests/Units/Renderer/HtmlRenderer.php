@@ -21,15 +21,15 @@ class HtmlRenderer extends atoum
         $json = '{"entityMap":{},"blocks":[{"key":"e0vbh","text":"Hello world!","type":"unstyled","depth":0,"inlineStyleRanges":[{"offset":2,"length":2,"style":"BOLD"}],"entityRanges":[],"data":{}}]}';
         $rawState = $this->getRawState($json);
 
-        $templating = $this->getMockTemplating();
+        $blockGuesser = $this->getMockBlockGuesser();
         $converter = $this->getMockConverter();
-        $builder = $this->getMockBuilder($templating);
+        $builder = $this->getMockBuilder($blockGuesser);
 
         $this
             ->if($renderer = new TestedClass($converter, $builder))
             ->then
                 ->string($renderer->render($rawState))
-                ->isEqualTo('He<span class="u-bold">ll</span>o world!')
+                ->isEqualTo('He<span class="bold">ll</span>o world!')
             ->then
                 ->mock($converter)->call('convertFromRaw')->withArguments($rawState)->once()
                 ->mock($builder)->call('build')->once()

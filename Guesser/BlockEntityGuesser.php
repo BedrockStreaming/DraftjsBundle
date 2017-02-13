@@ -2,8 +2,8 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Guesser;
 
-use M6Web\Bundle\DraftjsBundle\Renderer\Entity\BlockEntityRendererInterface;
 use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
+use M6Web\Bundle\DraftjsBundle\Renderer\Entity\BlockEntityRendererInterface;
 
 /**
  * Class EntityGuesser
@@ -13,7 +13,7 @@ use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
 class BlockEntityGuesser implements EntityGuesserInterface
 {
     /**
-     * @var array
+     * @var BlockEntityRendererInterface[]
      */
     private $renderers = [];
 
@@ -33,7 +33,7 @@ class BlockEntityGuesser implements EntityGuesserInterface
     /**
      * @param DraftEntity $entity
      *
-     * @return null
+     * @return null|BlockEntityRendererInterface
      */
     public function getRenderer(DraftEntity $entity)
     {

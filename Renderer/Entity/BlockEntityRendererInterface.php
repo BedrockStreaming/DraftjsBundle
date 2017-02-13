@@ -2,8 +2,8 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Renderer\Entity;
 
-use M6Web\Bundle\DraftjsBundle\Renderer\RendererInterface;
 use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
+use M6Web\Bundle\DraftjsBundle\Renderer\RendererInterface;
 
 /**
  * Interface BlockEntityRendererInterface

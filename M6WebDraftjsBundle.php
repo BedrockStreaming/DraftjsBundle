@@ -2,11 +2,11 @@
 
 namespace M6Web\Bundle\DraftjsBundle;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use M6Web\Bundle\DraftjsBundle\DependencyInjection\Compiler\BlockRendererPass;
 use M6Web\Bundle\DraftjsBundle\DependencyInjection\Compiler\BlockEntityRendererPass;
+use M6Web\Bundle\DraftjsBundle\DependencyInjection\Compiler\BlockRendererPass;
 use M6Web\Bundle\DraftjsBundle\DependencyInjection\Compiler\InlineEntityRendererPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * Class M6WebDraftjsBundle

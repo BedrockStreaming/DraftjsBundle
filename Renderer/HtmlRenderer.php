@@ -2,8 +2,8 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Renderer;
 
-use M6Web\Bundle\DraftjsBundle\Converter\ConverterInterface;
 use M6Web\Bundle\DraftjsBundle\Builder\BuilderInterface;
+use M6Web\Bundle\DraftjsBundle\Converter\ConverterInterface;
 
 /**
  * Class HtmlRenderer

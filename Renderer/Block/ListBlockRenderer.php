@@ -2,6 +2,7 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Renderer\Block;
 
+use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
 use M6Web\Bundle\DraftjsBundle\Renderer\Helper\InlineRendererHelperTrait;
 
 /**
@@ -64,6 +65,13 @@ class ListBlockRenderer extends AbstractBlockRenderer
         return self::NAME;
     }
 
+    /**
+     * @param ContentBlock[] $extractedItems
+     * @param string         $type
+     * @param array          $entities
+     *
+     * @return string
+     */
     private function getContent(array $extractedItems, $type, array $entities)
     {
         if (0 === count($extractedItems)) {
@@ -117,15 +125,16 @@ class ListBlockRenderer extends AbstractBlockRenderer
     }
 
     /**
-     * @param $type
+     * @param string $type
+     * @param string $classNames
      *
      * @return string
      */
     private function openListTag($type, $classNames = '')
     {
-        $tag = self::TAGS_NAME[self::UNORDERED_LIST];
-        if (self::ORDERED_LIST === $type) {
-            $tag = self::TAGS_NAME[self::ORDERED_LIST];
+        $tag = $this::TAGS_NAME[$this::UNORDERED_LIST];
+        if ($this::ORDERED_LIST === $type) {
+            $tag = $this::TAGS_NAME[$this::ORDERED_LIST];
         }
 
         return $this->openNode($tag, [
@@ -134,13 +143,15 @@ class ListBlockRenderer extends AbstractBlockRenderer
     }
 
     /**
+     * @param string $type
+     *
      * @return string
      */
     private function closeListTag($type)
     {
-        $tag = self::TAGS_NAME[self::UNORDERED_LIST];
-        if (self::ORDERED_LIST === $type) {
-            $tag = self::TAGS_NAME[self::ORDERED_LIST];
+        $tag = $this::TAGS_NAME[$this::UNORDERED_LIST];
+        if ($this::ORDERED_LIST === $type) {
+            $tag = $this::TAGS_NAME[$this::ORDERED_LIST];
         }
 
         return $this->closeNode($tag);
@@ -154,10 +165,10 @@ class ListBlockRenderer extends AbstractBlockRenderer
     private function openChildTag($classNames = '')
     {
         if (empty($classNames)) {
-            return $this->openNode(self::LI);
+            return $this->openNode($this::LI);
         }
 
-        return $this->openNode(self::LI, [
+        return $this->openNode($this::LI, [
             'class' => $classNames,
         ]);
     }
@@ -167,7 +178,7 @@ class ListBlockRenderer extends AbstractBlockRenderer
      */
     private function closeChildTag()
     {
-        return $this->closeNode(self::LI);
+        return $this->closeNode($this::LI);
     }
 
     /**

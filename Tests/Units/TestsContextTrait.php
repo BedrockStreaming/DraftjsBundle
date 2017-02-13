@@ -3,10 +3,10 @@
 namespace M6Web\Bundle\DraftjsBundle\Tests\Units;
 
 use M6Web\Bundle\DraftjsBundle\Guesser\BlockGuesserInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
 use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
 use M6Web\Bundle\DraftjsBundle\Model\ContentState;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 /**
  * Trait TestsContextTrait

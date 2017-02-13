@@ -2,9 +2,9 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Builder;
 
+use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
 use M6Web\Bundle\DraftjsBundle\Guesser\BlockGuesser;
 use M6Web\Bundle\DraftjsBundle\Model\ContentState;
-use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
 
 /**
  * Class HtmlBuilder

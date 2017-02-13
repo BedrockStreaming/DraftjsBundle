@@ -3,9 +3,9 @@
 namespace M6Web\Bundle\DraftjsBundle\Tests\Units\Builder;
 
 use M6Web\Bundle\DraftjsBundle\Builder\HtmlBuilder as TestedClass;
-use mageekguy\atoum;
-use M6Web\Bundle\DraftjsBundle\Tests\Units\TestsContextTrait;
 use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
+use M6Web\Bundle\DraftjsBundle\Tests\Units\TestsContextTrait;
+use mageekguy\atoum;
 
 /**
  * HtmlBuilder

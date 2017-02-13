@@ -81,7 +81,7 @@ class ContentState
      */
     public function getPlainText($delimiter = '\u000A')
     {
-        return array_reduce($this->blockMap, function ($output, $contentBlock) use ($delimiter) {
+        return array_reduce($this->blockMap, function ($output, ContentBlock $contentBlock) use ($delimiter) {
             return sprintf('%s%s%s', $output, $contentBlock->getText(), $delimiter);
         }, '');
     }

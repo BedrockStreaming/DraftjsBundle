@@ -130,7 +130,6 @@ acme_demo.acme_block_renderer:
     parent: m6_web_draft_js.abstract_block_renderer
     calls:
         - [setBlockClassName, ['block-acme']]
-        - [setTemplate, ['AcmeDemoBundle:Block:acme.html.twig']]
     tags:
         - { name: draftjs.block_renderer, alias: draftjs_acme_block_renderer }
 ```
@@ -309,7 +308,6 @@ acme_demo.acme_block_entity_renderer:
     parent: m6_web_draft_js.abstract_block_entity_renderer
     calls:
         - [setClassName, ['block-entity-acme']]
-        - [setTemplate, ['AcmeDemoBundle:Entity:acme.html.twig']]
     tags:
         - { name: draftjs.block_entity_renderer, alias: draftjs_acme_block_entity_renderer }
 ```

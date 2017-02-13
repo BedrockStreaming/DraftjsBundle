@@ -18,11 +18,6 @@ class BlockGuesser implements BlockGuesserInterface
     private $renderers = [];
 
     /**
-     * @var array
-     */
-    private $templates;
-
-    /**
      * @param BlockRendererInterface $renderer
      * @param string                 $alias
      *
@@ -49,17 +44,5 @@ class BlockGuesser implements BlockGuesserInterface
         }
 
         return null;
-    }
-
-    /**
-     * @param array $templates
-     *
-     * @return $this
-     */
-    public function setTemplates(array $templates = [])
-    {
-        $this->templates = $templates;
-
-        return $this;
     }
 }

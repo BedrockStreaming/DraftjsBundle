@@ -41,16 +41,12 @@ services:
     m6_web_draftjs.default_block_renderer:
         class: M6Web\Bundle\DraftjsBundle\Renderer\Block\DefaultBlockRenderer
         parent: m6_web_draft_js.abstract_block_renderer
-        calls:
-            - [setTemplate, ['M6WebDraftjsBundle:Block:default.html.twig']]
         tags:
             - { name: draftjs.block_renderer, alias: draftjs_default_block_renderer }
 
     m6_web_draftjs.heading_block_renderer:
         class: M6Web\Bundle\DraftjsBundle\Renderer\Block\HeadingBlockRenderer
         parent: m6_web_draft_js.abstract_block_renderer
-        calls:
-            - [setTemplate, ['M6WebDraftjsBundle:Block:heading.html.twig']]
         tags:
             - { name: draftjs.block_renderer, alias: draftjs_heading_block_renderer }
 
@@ -59,7 +55,6 @@ services:
         parent: m6_web_draft_js.abstract_block_renderer
         calls:
             - [setBlockEntityGuesser, ['@m6_web_draftjs.block_entity_guesser']]
-            - [setTemplate, ['M6WebDraftjsBundle:Block:default.html.twig']]
         tags:
             - { name: draftjs.block_renderer, alias: draftjs_atomic_block_renderer }
 
@@ -72,8 +67,6 @@ services:
     m6_web_draftjs.blockquote_block_renderer:
         class: M6Web\Bundle\DraftjsBundle\Renderer\Block\BlockquoteBlockRenderer
         parent: m6_web_draft_js.abstract_block_renderer
-        calls:
-            - [setTemplate, ['M6WebDraftjsBundle:Block:default.html.twig']]
         tags:
             - { name: draftjs.block_renderer, alias: draftjs_blockquote_block_renderer }
 

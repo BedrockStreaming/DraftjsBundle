@@ -32,11 +32,7 @@ class DefaultBlockRenderer extends AbstractBlockRenderer
 
         $content = $this->contentRenderer->render($contentBlock->getText(), $contentBlock->getCharacterList(), $entities);
 
-        if (!$this->template) {
-            return $content;
-        }
-
-        return $this->templating->render($this->getTemplate(), [
+        return $this->templating->render('M6WebDraftjsBundle:Block:default.html.twig', [
             'classNames' => $this->buildClassNames($contentBlock),
             'content' => $content,
         ]);

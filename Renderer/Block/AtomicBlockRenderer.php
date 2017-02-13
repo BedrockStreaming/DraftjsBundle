@@ -56,11 +56,11 @@ class AtomicBlockRenderer extends AbstractBlockRenderer
 
         $content = $renderer->render($entity);
 
-        if (empty($content) || !$this->template) {
+        if (empty($content)) {
             return $content;
         }
 
-        return $this->templating->render($this->getTemplate(), [
+        return $this->templating->render('M6WebDraftjsBundle:Block:default.html.twig', [
             'classNames' => $this->buildClassNames($contentBlock),
             'content' => $content,
         ]);

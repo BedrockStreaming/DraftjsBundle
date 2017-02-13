@@ -20,7 +20,7 @@ trait TestsContextTrait
     {
         $templating = new \mock\Symfony\Bundle\FrameworkBundle\Templating\EngineInterface();
         $templating->getMockController()->render = function ($filename, $params) {
-            return $params['innerHTML'];
+            return isset($params['content']) ? $params['content'] : '';
         };
 
         return $templating;

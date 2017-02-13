@@ -36,11 +36,6 @@ abstract class AbstractBlockRenderer implements BlockRendererInterface
     protected $textAlignmentClassNames;
 
     /**
-     * @var string
-     */
-    protected $template;
-
-    /**
      * AbstractBlockRenderer constructor.
      *
      * @param ContentRenderer $contentRenderer
@@ -92,25 +87,5 @@ abstract class AbstractBlockRenderer implements BlockRendererInterface
     public function getTextAlignmentClassName($textAlignment)
     {
         return $this->textAlignmentClassNames[$textAlignment];
-    }
-
-    /**
-     * @param string $template
-     *
-     * @return $this
-     */
-    public function setTemplate($template)
-    {
-        $this->template = $template;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemplate()
-    {
-        return $this->template;
     }
 }

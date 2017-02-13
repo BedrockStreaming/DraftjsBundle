@@ -22,11 +22,6 @@ abstract class AbstractBlockEntityRenderer implements BlockEntityRendererInterfa
     protected $className;
 
     /**
-     * @var string
-     */
-    protected $template;
-
-    /**
      * AbstractEntityRenderer constructor.
      *
      * @param EngineInterface $templating
@@ -54,25 +49,5 @@ abstract class AbstractBlockEntityRenderer implements BlockEntityRendererInterfa
     public function getClassName()
     {
         return $this->className;
-    }
-
-    /**
-     * @param string $template
-     *
-     * @return $this
-     */
-    public function setTemplate($template)
-    {
-        $this->template = $template;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemplate()
-    {
-        return $this->template;
     }
 }

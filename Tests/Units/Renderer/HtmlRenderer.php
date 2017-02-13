@@ -3,8 +3,8 @@
 namespace M6Web\Bundle\DraftjsBundle\Tests\Units\Renderer;
 
 use M6Web\Bundle\DraftjsBundle\Renderer\HtmlRenderer as TestedClass;
-use mageekguy\atoum;
 use M6Web\Bundle\DraftjsBundle\Tests\Units\TestsContextTrait;
+use mageekguy\atoum;
 
 /**
  * HtmlRenderer

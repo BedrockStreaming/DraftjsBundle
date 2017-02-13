@@ -3,8 +3,8 @@
 namespace M6Web\Bundle\DraftjsBundle\Tests\Units\Guesser;
 
 use M6Web\Bundle\DraftjsBundle\Guesser\InlineEntityGuesser as TestedClass;
-use mageekguy\atoum;
 use M6Web\Bundle\DraftjsBundle\Tests\Units\TestsContextTrait;
+use mageekguy\atoum;
 
 /**
  * InlineEntityGuesser

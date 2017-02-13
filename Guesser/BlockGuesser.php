@@ -2,8 +2,8 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Guesser;
 
-use M6Web\Bundle\DraftjsBundle\Renderer\Block\BlockRendererInterface;
 use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
+use M6Web\Bundle\DraftjsBundle\Renderer\Block\BlockRendererInterface;
 
 /**
  * Class BlockGuesser
@@ -13,9 +13,14 @@ use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
 class BlockGuesser implements BlockGuesserInterface
 {
     /**
-     * @var array
+     * @var BlockRendererInterface[]
      */
     private $renderers = [];
+
+    /**
+     * @var array
+     */
+    private $templates;
 
     /**
      * @param BlockRendererInterface $renderer
@@ -33,7 +38,7 @@ class BlockGuesser implements BlockGuesserInterface
     /**
      * @param ContentBlock $contentBlock
      *
-     * @return null
+     * @return null|BlockRendererInterface
      */
     public function getRenderer(ContentBlock $contentBlock)
     {

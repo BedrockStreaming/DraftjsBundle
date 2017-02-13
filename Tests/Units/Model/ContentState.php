@@ -2,11 +2,11 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Tests\Units\Model;
 
+use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
+use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
+use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
 use M6Web\Bundle\DraftjsBundle\Model\ContentState as TestedClass;
 use mageekguy\atoum;
-use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
-use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
-use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
 
 /**
  * ContentState

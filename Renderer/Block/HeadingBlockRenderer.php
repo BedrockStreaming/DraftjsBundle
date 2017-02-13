@@ -61,7 +61,7 @@ class HeadingBlockRenderer extends AbstractBlockRenderer
         }
 
         return $this->templating->render($this->getTemplate(), [
-            'tag' => self::TAGS_NAME[$contentBlock->getType()],
+            'tag' => $this::TAGS_NAME[$contentBlock->getType()],
             'classNames' => $this->buildClassNames($contentBlock),
             'content' => $content,
         ]);

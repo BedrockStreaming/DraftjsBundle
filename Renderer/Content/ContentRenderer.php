@@ -2,11 +2,13 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Renderer\Content;
 
-use M6Web\Bundle\DraftjsBundle\Renderer\RendererInterface;
-use M6Web\Bundle\DraftjsBundle\Renderer\Helper\InlineRendererHelperTrait;
-use M6Web\Bundle\DraftjsBundle\Guesser\InlineEntityGuesser;
-use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
 use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
+use M6Web\Bundle\DraftjsBundle\Guesser\InlineEntityGuesser;
+use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
+use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
+use M6Web\Bundle\DraftjsBundle\Renderer\Helper\InlineRendererHelperTrait;
+use M6Web\Bundle\DraftjsBundle\Renderer\Inline\InlineEntityRendererInterface;
+use M6Web\Bundle\DraftjsBundle\Renderer\RendererInterface;
 
 /**
  * class ContentRenderer
@@ -40,9 +42,9 @@ class ContentRenderer implements RendererInterface
     }
 
     /**
-     * @param string $text
-     * @param array  $characterList
-     * @param array  $entities
+     * @param string              $text
+     * @param CharacterMetadata[] $characterList
+     * @param array               $entities
      *
      * @return string
      *
@@ -139,7 +141,7 @@ class ContentRenderer implements RendererInterface
     /**
      * @param DraftEntity $entity
      *
-     * @return null
+     * @return null|InlineEntityRendererInterface
      *
      * @throws DraftjsException
      */

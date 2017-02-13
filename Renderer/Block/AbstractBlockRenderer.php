@@ -2,8 +2,8 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Renderer\Block;
 
-use M6Web\Bundle\DraftjsBundle\Renderer\Helper\BlockRendererHelperTrait;
 use M6Web\Bundle\DraftjsBundle\Renderer\Content\ContentRenderer;
+use M6Web\Bundle\DraftjsBundle\Renderer\Helper\BlockRendererHelperTrait;
 use Symfony\Component\Templating\EngineInterface;
 
 /**

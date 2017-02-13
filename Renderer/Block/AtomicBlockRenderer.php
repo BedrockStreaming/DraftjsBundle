@@ -2,9 +2,10 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Renderer\Block;
 
+use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
 use M6Web\Bundle\DraftjsBundle\Guesser\BlockEntityGuesser;
 use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
-use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
+use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
 
 /**
  * Class AtomicBlockRenderer

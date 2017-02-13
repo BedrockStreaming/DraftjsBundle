@@ -2,8 +2,8 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Guesser;
 
-use M6Web\Bundle\DraftjsBundle\Renderer\Inline\InlineEntityRendererInterface;
 use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
+use M6Web\Bundle\DraftjsBundle\Renderer\Inline\InlineEntityRendererInterface;
 
 /**
  * Class InlineEntityGuesser
@@ -13,7 +13,7 @@ use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
 class InlineEntityGuesser implements EntityGuesserInterface
 {
     /**
-     * @var array
+     * @var InlineEntityRendererInterface[]
      */
     private $renderers = [];
 

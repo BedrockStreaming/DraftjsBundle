@@ -3,12 +3,12 @@
 namespace M6Web\Bundle\DraftjsBundle\Tests\Units\Converter;
 
 use M6Web\Bundle\DraftjsBundle\Converter\ContentStateConverter as TestedClass;
-use mageekguy\atoum;
-use M6Web\Bundle\DraftjsBundle\Tests\Units\TestsContextTrait;
-use M6Web\Bundle\DraftjsBundle\Model\ContentState;
-use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
-use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
 use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
+use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
+use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
+use M6Web\Bundle\DraftjsBundle\Model\ContentState;
+use M6Web\Bundle\DraftjsBundle\Tests\Units\TestsContextTrait;
+use mageekguy\atoum;
 
 /**
  * ContentStateConverter

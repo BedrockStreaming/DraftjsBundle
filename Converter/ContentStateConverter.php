@@ -1,12 +1,11 @@
 <?php
-
 namespace M6Web\Bundle\DraftjsBundle\Converter;
 
-use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
-use M6Web\Bundle\DraftjsBundle\Model\ContentState;
-use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
-use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
 use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
+use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
+use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
+use M6Web\Bundle\DraftjsBundle\Model\ContentState;
+use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
 
 /**
  * Class ContentStateConverter
@@ -156,6 +155,9 @@ class ContentStateConverter implements ConverterInterface
 
     /**
      * Generate a hash from styles and entity
+     *
+     * @param array  $styles
+     * @param string $index
      *
      * @return null|string
      */

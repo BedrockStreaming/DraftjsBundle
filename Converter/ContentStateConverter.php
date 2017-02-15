@@ -36,7 +36,7 @@ class ContentStateConverter implements ConverterInterface
         $contentState = new ContentState();
 
         $entities = $this->decodeEntitiesFromRaw($raw['entityMap']);
-        $blocks = $this->decodeBlocksFromRaw($raw['blocks'], $entities);
+        $blocks = $this->decodeBlocksFromRaw($raw['blocks']);
 
         $contentState->setEntityMap($entities);
         $contentState->setBlockMap($blocks);
@@ -64,11 +64,10 @@ class ContentStateConverter implements ConverterInterface
 
     /**
      * @param array $blocks
-     * @param array $entities
      *
      * @return array
      */
-    private function decodeBlocksFromRaw(array $blocks = [], array $entities = [])
+    private function decodeBlocksFromRaw(array $blocks = [])
     {
         $createBlockFromRaw = function ($block) {
             $entities = $this->decodeEntityRanges($block);

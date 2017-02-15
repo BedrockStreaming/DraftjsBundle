@@ -47,8 +47,15 @@ class HtmlBuilder implements BuilderInterface
         $iterator = new \ArrayIterator($contentBlocks);
         $iterator->rewind();
 
+        $previousBlock = null;
         while ($iterator->valid()) {
-            $renderer = $this->blockGuesser->getRenderer($iterator->current());
+            $block = $iterator->current();
+
+            if ($previousBlock === $block) {
+                throw new DraftjsException('Iterator must be switch to next value in custom renderer');
+            }
+
+            $renderer = $this->blockGuesser->getRenderer($block);
 
             if (!$renderer) {
                 throw new DraftjsException(
@@ -57,6 +64,8 @@ class HtmlBuilder implements BuilderInterface
             }
 
             $output .= $renderer->render($iterator, $entities);
+
+            $previousBlock = $block;
         }
 
         return $output;

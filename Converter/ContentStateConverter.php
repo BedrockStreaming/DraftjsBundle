@@ -51,19 +51,15 @@ class ContentStateConverter implements ConverterInterface
      */
     private function decodeEntitiesFromRaw(array $entityMap = [])
     {
-        $createEntityFromRaw = function ($entities, $rawEntity) {
+        $createEntityFromRaw = function ($rawEntity) {
             $type = $rawEntity['type'];
             $mutability = $rawEntity['mutability'];
             $data = $rawEntity['data'];
 
-            $entity = new DraftEntity($type, $mutability, $data);
-
-            $entities[] = $entity;
-
-            return $entities;
+            return new DraftEntity($type, $mutability, $data);
         };
 
-        return array_reduce($entityMap, $createEntityFromRaw, []);
+        return array_map($createEntityFromRaw, $entityMap);
     }
 
     /**
@@ -74,7 +70,7 @@ class ContentStateConverter implements ConverterInterface
      */
     private function decodeBlocksFromRaw(array $blocks = [], array $entities = [])
     {
-        $createBlockFromRaw = function ($contentBlocks, $block) use ($entities) {
+        $createBlockFromRaw = function ($block) {
             $entities = $this->decodeEntityRanges($block);
             $styles = $this->decodeInlineStyleRanges($block);
 
@@ -86,14 +82,10 @@ class ContentStateConverter implements ConverterInterface
 
             $characterList = $this->createCharacterList($text, $styles, $entities);
 
-            $contentBlock = new ContentBlock($key, $type, $text, $characterList, $depth, $data);
-
-            $contentBlocks[] = $contentBlock;
-
-            return $contentBlocks;
+            return new ContentBlock($key, $type, $text, $characterList, $depth, $data);
         };
 
-        return array_reduce($blocks, $createBlockFromRaw, []);
+        return array_map($createBlockFromRaw, $blocks);
     }
 
     /**

@@ -1,17 +1,16 @@
 <?php
-
 namespace M6Web\Bundle\DraftjsBundle\Converter;
 
-use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
-use M6Web\Bundle\DraftjsBundle\Model\ContentState;
-use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
-use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
 use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
+use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
+use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
+use M6Web\Bundle\DraftjsBundle\Model\ContentState;
+use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
 
 /**
  * Class ContentStateConverter
  *
- * @package M6Web\Bundle\DraftjsBundle\Model
+ * @package M6Web\Bundle\DraftjsBundle\Converter
  */
 class ContentStateConverter implements ConverterInterface
 {
@@ -27,17 +26,17 @@ class ContentStateConverter implements ConverterInterface
     public function convertFromRaw(array $raw = [])
     {
         if (!isset($raw['entityMap'])) {
-            throw new DraftjsException('Raw undefined entityMap key');
+            throw new DraftjsException('Undefined entityMap key not allowed');
         }
 
         if (!isset($raw['blocks'])) {
-            throw new DraftjsException('Raw undefined blocks key');
+            throw new DraftjsException('Undefined blocks key not allowed');
         }
 
         $contentState = new ContentState();
 
         $entities = $this->decodeEntitiesFromRaw($raw['entityMap']);
-        $blocks = $this->decodeBlocksFromRaw($raw['blocks'], $entities);
+        $blocks = $this->decodeBlocksFromRaw($raw['blocks']);
 
         $contentState->setEntityMap($entities);
         $contentState->setBlockMap($blocks);
@@ -52,45 +51,25 @@ class ContentStateConverter implements ConverterInterface
      */
     private function decodeEntitiesFromRaw(array $entityMap = [])
     {
-        $createEntityFromRaw = function ($entities, $rawEntity) {
-            if (!DraftEntity::supportsType($rawEntity['type'])) {
-                throw new DraftjsException(sprintf('Unsupported entity type "%s"', $rawEntity['type']));
-            }
-
-            if (!DraftEntity::supportsMutability($rawEntity['mutability'])) {
-                throw new DraftjsException(sprintf('Unsupported entity mutability "%s"', $rawEntity['type']));
-            }
-
+        $createEntityFromRaw = function ($rawEntity) {
             $type = $rawEntity['type'];
             $mutability = $rawEntity['mutability'];
             $data = $rawEntity['data'];
 
-            $entity = new DraftEntity();
-            $entity->setType($type);
-            $entity->setMutability($mutability);
-            $entity->setData($data);
-
-            $entities[] = $entity;
-
-            return $entities;
+            return new DraftEntity($type, $mutability, $data);
         };
 
-        return array_reduce($entityMap, $createEntityFromRaw, []);
+        return array_map($createEntityFromRaw, $entityMap);
     }
 
     /**
      * @param array $blocks
-     * @param array $entities
      *
      * @return array
      */
-    private function decodeBlocksFromRaw(array $blocks = [], array $entities = [])
+    private function decodeBlocksFromRaw(array $blocks = [])
     {
-        $createBlockFromRaw = function ($contentBlocks, $block) use ($entities) {
-            if (!ContentBlock::supportsType($block['type'])) {
-                throw new DraftjsException(sprintf('Unsupported block type "%s"', $block['type']));
-            }
-
+        $createBlockFromRaw = function ($block) {
             $entities = $this->decodeEntityRanges($block);
             $styles = $this->decodeInlineStyleRanges($block);
 
@@ -102,14 +81,10 @@ class ContentStateConverter implements ConverterInterface
 
             $characterList = $this->createCharacterList($text, $styles, $entities);
 
-            $contentBlock = new ContentBlock($key, $type, $text, $characterList, $depth, $data);
-
-            $contentBlocks[] = $contentBlock;
-
-            return $contentBlocks;
+            return new ContentBlock($key, $type, $text, $characterList, $depth, $data);
         };
 
-        return array_reduce($blocks, $createBlockFromRaw, []);
+        return array_map($createBlockFromRaw, $blocks);
     }
 
     /**
@@ -126,13 +101,13 @@ class ContentStateConverter implements ConverterInterface
             foreach ($block['entityRanges'] as $entityRange) {
                 $offset = $entityRange['offset'];
                 $length = $entityRange['length'];
-                $entityKey = $entityRange['key'];
+                $entityIndex = $entityRange['key'];
 
                 $start = mb_strlen(mb_substr($text, 0, $offset));
                 $end = $start + mb_strlen(mb_substr($text, $offset, $length));
 
                 for ($i = $start; $i < $end; $i++) {
-                    $entities[$i] = $entityKey;
+                    $entities[$i] = $entityIndex;
                 }
             }
         }
@@ -172,9 +147,12 @@ class ContentStateConverter implements ConverterInterface
     /**
      * Generate a hash from styles and entity
      *
+     * @param array  $styles
+     * @param string $index
+     *
      * @return null|string
      */
-    private function generateCharacterMetadataHash(array $styles = [], $entity = null)
+    private function generateCharacterMetadataHash(array $styles = [], $index = null)
     {
         $hash = null;
 
@@ -182,8 +160,8 @@ class ContentStateConverter implements ConverterInterface
             $hash .= implode('-', $styles);
         }
 
-        if (!is_null($entity)) {
-            $hash .= strlen($hash) > 0 ? '-'.$entity : $entity;
+        if (!is_null($index)) {
+            $hash .= strlen($hash) > 0 ? '-'.$index : $index;
         }
 
         return $hash;
@@ -198,21 +176,25 @@ class ContentStateConverter implements ConverterInterface
      */
     private function createCharacterList($text = '', array $styles = [], array $entities = [])
     {
+        if ('' === $text) {
+            return [];
+        }
+
         $listCharacterMetadata = [];
         $handledCharacterMetadata = [];
 
         $chars = str_split($text);
 
         foreach ($chars as $index => $char) {
-            $charEntity = $entities[$index];
+            $charEntityIndex = $entities[$index];
             $charStyles = $styles[$index];
 
-            $hash = $this->generateCharacterMetadataHash($charStyles, $charEntity);
+            $hash = $this->generateCharacterMetadataHash($charStyles, $charEntityIndex);
 
             if (array_key_exists($hash, $handledCharacterMetadata)) {
                 $characterMetadata = $handledCharacterMetadata[$hash];
             } else {
-                $characterMetadata = new CharacterMetadata($charStyles, $charEntity);
+                $characterMetadata = new CharacterMetadata($charStyles, $charEntityIndex);
             }
 
             $listCharacterMetadata[] = $characterMetadata;

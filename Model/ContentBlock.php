@@ -12,16 +12,6 @@ use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
 class ContentBlock
 {
     const UNSTYLED = 'unstyled';
-    const HEADER_ONE = 'header-one';
-    const HEADER_TWO = 'header-two';
-    const HEADER_THREE = 'header-three';
-
-    const TYPES = [
-        self::UNSTYLED,
-        self::HEADER_ONE,
-        self::HEADER_TWO,
-        self::HEADER_THREE,
-    ];
 
     /**
      * @var string $key
@@ -63,14 +53,14 @@ class ContentBlock
      * @param int    $depth
      * @param array  $data
      */
-    public function __construct($key = null, $type = self::UNSTYLED, $text = '', array $characterList = [], $depth = 0, array $data = [])
+    public function __construct($key, $type = self::UNSTYLED, $text = '', array $characterList = [], $depth = 0, array $data = [])
     {
         $this->key = $key;
-        $this->type = $type;
+        $this->type = strtolower($type);
         $this->text = $text;
         $this->characterList = $characterList;
         $this->depth = $depth;
-        $this->data = [];
+        $this->data = $data;
     }
 
     /**
@@ -109,11 +99,7 @@ class ContentBlock
      */
     public function setType($type)
     {
-        if (!self::supportsType($type)) {
-            throw new DraftjsException(sprintf('Unsupported type %s', $type));
-        }
-
-        $this->type = $type;
+        $this->type = strtolower($type);
 
         return $this;
     }
@@ -196,15 +182,5 @@ class ContentBlock
         $this->characterList = $characterList;
 
         return $this;
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    public static function supportsType($type)
-    {
-        return in_array($type, self::TYPES);
     }
 }

@@ -2,10 +2,11 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Tests\Units;
 
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use M6Web\Bundle\DraftjsBundle\Guesser\BlockGuesserInterface;
 use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
 use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
 use M6Web\Bundle\DraftjsBundle\Model\ContentState;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 /**
  * Trait TestsContextTrait
@@ -19,7 +20,7 @@ trait TestsContextTrait
     {
         $templating = new \mock\Symfony\Bundle\FrameworkBundle\Templating\EngineInterface();
         $templating->getMockController()->render = function ($filename, $params) {
-            return $params['innerHTML'];
+            return isset($params['content']) ? $params['content'] : '';
         };
 
         return $templating;
@@ -34,33 +35,63 @@ trait TestsContextTrait
     }
 
     /**
-     * @param EngineInterface $templating
+     * @param BlockGuesserInterface $blockGuesser
      *
      * @return \mock\M6Web\Bundle\DraftjsBundle\Builder\HtmlBuilder
      */
-    private function getMockBuilder(EngineInterface $templating)
+    private function getMockBuilder(BlockGuesserInterface $blockGuesser)
     {
-        return new \mock\M6Web\Bundle\DraftjsBundle\Builder\HtmlBuilder($templating);
+        return new \mock\M6Web\Bundle\DraftjsBundle\Builder\HtmlBuilder($blockGuesser);
     }
 
     /**
-     * @return ContentState
-     *
-     * @throws \M6Web\Bundle\DraftjsBundle\Exception\DraftjsException
+     * @return \mock\M6Web\Bundle\DraftjsBundle\Guesser\BlockGuesser
      */
-    private function getContentState()
+    private function getMockBlockGuesser(array $inlineClassNames = [])
     {
-        $emptyCharacterMetadata = new CharacterMetadata();
-        $boldItalicCharacterMetadata = new CharacterMetadata(['BOLD', 'ITALIC']);
-        $italicCharacterMetadata = new CharacterMetadata(['ITALIC']);
+        $templating = $this->getMockTemplating();
 
-        $contentBlock = new ContentBlock();
-        $contentBlock->setKey('e0vbh');
-        $contentBlock->setText('Hello world!');
-        $contentBlock->setDepth(0);
-        $contentBlock->setType(ContentBlock::UNSTYLED);
-        $contentBlock->setData([]);
-        $contentBlock->setCharacterList([
+        // inline entity guesser
+        $inlineEntityGuesser = new \mock\M6Web\Bundle\DraftjsBundle\Guesser\InlineEntityGuesser();
+
+        // content renderer
+        $contentRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Renderer\Content\ContentRenderer($inlineEntityGuesser);
+
+        if (!empty($inlineClassNames)) {
+            $contentRenderer->setInlineClassNames($inlineClassNames);
+        }
+
+        // block entity guesser
+        $blockEntityGuesser = new \mock\M6Web\Bundle\DraftjsBundle\Guesser\BlockEntityGuesser();
+
+        // add block renderer
+        $atomicBlockRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Renderer\Block\AtomicBlockRenderer($contentRenderer, $templating);
+        $atomicBlockRenderer->setBlockEntityGuesser($blockEntityGuesser);
+
+        $defaultBlockRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Renderer\Block\DefaultBlockRenderer($contentRenderer, $templating);
+        $headingBlockRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Renderer\Block\HeadingBlockRenderer($contentRenderer, $templating);
+        $listBlockRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Renderer\Block\ListBlockRenderer($contentRenderer, $templating);
+
+        $blockGuesser = new \mock\M6Web\Bundle\DraftjsBundle\Guesser\BlockGuesser();
+
+        $blockGuesser->addRenderer($atomicBlockRenderer, 'atomic_block_renderer');
+        $blockGuesser->addRenderer($defaultBlockRenderer, 'default_block_renderer');
+        $blockGuesser->addRenderer($headingBlockRenderer, 'heading_block_renderer');
+        $blockGuesser->addRenderer($listBlockRenderer, 'list_block_renderer');
+
+        return $blockGuesser;
+    }
+
+    /**
+     * @return \mock\M6Web\Bundle\DraftjsBundle\Model\ContentState
+     */
+    private function getMockContentState()
+    {
+        $emptyCharacterMetadata = new \mock\M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata();
+        $boldItalicCharacterMetadata = new \mock\M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata(['BOLD', 'ITALIC']);
+        $italicCharacterMetadata = new \mock\M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata(['ITALIC']);
+
+        $characterList = [
             $emptyCharacterMetadata,
             $emptyCharacterMetadata,
             $boldItalicCharacterMetadata,
@@ -73,9 +104,11 @@ trait TestsContextTrait
             $emptyCharacterMetadata,
             $emptyCharacterMetadata,
             $emptyCharacterMetadata,
-        ]);
+        ];
 
-        return new ContentState([$contentBlock]);
+        $contentBlock = new \mock\M6Web\Bundle\DraftjsBundle\Model\ContentBlock('e0vbh', 'unstyled', 'Hello world!', $characterList, 0, []);
+
+        return new \mock\M6Web\Bundle\DraftjsBundle\Model\ContentState([$contentBlock]);
     }
 
     /**

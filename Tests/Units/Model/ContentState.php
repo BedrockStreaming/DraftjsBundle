@@ -2,11 +2,11 @@
 
 namespace M6Web\Bundle\DraftjsBundle\Tests\Units\Model;
 
+use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
+use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
+use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
 use M6Web\Bundle\DraftjsBundle\Model\ContentState as TestedClass;
 use mageekguy\atoum;
-use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
-use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
-use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
 
 /**
  * ContentState
@@ -20,13 +20,7 @@ class ContentState extends atoum
      */
     public function testGetPlainText()
     {
-        $contentBlock = new ContentBlock();
-        $contentBlock->setKey('e0vbh');
-        $contentBlock->setText('Hello world!');
-        $contentBlock->setDepth(0);
-        $contentBlock->setType(ContentBlock::UNSTYLED);
-        $contentBlock->setData([]);
-        $contentBlock->setCharacterList([
+        $characterList = [
             new CharacterMetadata(),
             new CharacterMetadata(),
             new CharacterMetadata(['BOLD']),
@@ -39,8 +33,9 @@ class ContentState extends atoum
             new CharacterMetadata(),
             new CharacterMetadata(),
             new CharacterMetadata(),
-        ]);
+        ];
 
+        $contentBlock = new ContentBlock('e0vbh', 'unstyled', 'Hello world!', $characterList, 0, []);
 
         $this
             ->if($contentState = new TestedClass([$contentBlock]))

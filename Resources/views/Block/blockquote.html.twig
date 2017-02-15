@@ -1,0 +1,5 @@
+{% spaceless %}
+    <blockquote{% if classNames is not null %} class="{{ classNames }}"{% endif %}>
+        {{ content | raw }}
+    </blockquote>
+{% endspaceless %}

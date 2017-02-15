@@ -3,12 +3,12 @@
 namespace M6Web\Bundle\DraftjsBundle\Tests\Units\Converter;
 
 use M6Web\Bundle\DraftjsBundle\Converter\ContentStateConverter as TestedClass;
-use mageekguy\atoum;
-use M6Web\Bundle\DraftjsBundle\Tests\Units\TestsContextTrait;
-use M6Web\Bundle\DraftjsBundle\Model\ContentState;
-use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
-use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
 use M6Web\Bundle\DraftjsBundle\Exception\DraftjsException;
+use M6Web\Bundle\DraftjsBundle\Model\CharacterMetadata;
+use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
+use M6Web\Bundle\DraftjsBundle\Model\ContentState;
+use M6Web\Bundle\DraftjsBundle\Tests\Units\TestsContextTrait;
+use mageekguy\atoum;
 
 /**
  * ContentStateConverter
@@ -33,7 +33,7 @@ class ContentStateConverter extends atoum
                     }
                 )
                 ->isInstanceOf(DraftjsException::class)
-                ->hasMessage('Raw undefined entityMap key')
+                ->hasMessage('Undefined entityMap key not allowed')
         ;
     }
 
@@ -54,7 +54,7 @@ class ContentStateConverter extends atoum
                     }
                 )
                 ->isInstanceOf(DraftjsException::class)
-                ->hasMessage('Raw undefined blocks key')
+                ->hasMessage('Undefined blocks key not allowed')
         ;
     }
 
@@ -89,13 +89,7 @@ class ContentStateConverter extends atoum
         $emptyCharacterMetadata = new CharacterMetadata();
         $boldCharacterMetadata = new CharacterMetadata(['BOLD']);
 
-        $contentBlock = new ContentBlock();
-        $contentBlock->setKey('e0vbh');
-        $contentBlock->setText('Hello world!');
-        $contentBlock->setDepth(0);
-        $contentBlock->setType(ContentBlock::UNSTYLED);
-        $contentBlock->setData([]);
-        $contentBlock->setCharacterList([
+        $characterList = [
             $emptyCharacterMetadata,
             $emptyCharacterMetadata,
             $boldCharacterMetadata,
@@ -108,7 +102,10 @@ class ContentStateConverter extends atoum
             $emptyCharacterMetadata,
             $emptyCharacterMetadata,
             $emptyCharacterMetadata,
-        ]);
+        ];
+
+        $contentBlock = new ContentBlock('e0vbh', 'unstyled', 'Hello world!', $characterList, 0, []);
+
         $finalContentState = new ContentState();
         $finalContentState->setBlockMap([$contentBlock]);
 

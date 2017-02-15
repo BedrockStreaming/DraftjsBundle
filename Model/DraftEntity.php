@@ -17,10 +17,6 @@ class DraftEntity
 
     const MUTABILITY = [self::MUTABLE, self::IMMUTABLE, self::SEGMENTED];
 
-    const LINK = 'LINK';
-
-    const TYPES = [self::LINK];
-
     /**
      * @var string $type
      */
@@ -35,6 +31,22 @@ class DraftEntity
      * @var array $data
      */
     private $data = [];
+
+    /**
+     * DraftEntity constructor.
+     *
+     * @param string $type
+     * @param string $mutability
+     * @param array  $data
+     *
+     * @throws DraftjsException
+     */
+    public function __construct($type, $mutability = self::MUTABLE, array $data = [])
+    {
+        $this->type = strtoupper($type);
+        $this->mutability = strtoupper($mutability);
+        $this->data = $data;
+    }
 
     /**
      * @return string
@@ -53,11 +65,7 @@ class DraftEntity
      */
     public function setType($type)
     {
-        if (!self::supportsType($type)) {
-            throw new DraftjsException(sprintf('Unsupported type %s', $type));
-        }
-
-        $this->type = $type;
+        $this->type = strtoupper($type);
 
         return $this;
     }
@@ -80,10 +88,10 @@ class DraftEntity
     public function setMutability($mutability)
     {
         if (!self::supportsMutability($mutability)) {
-            throw new DraftjsException(sprintf('Unsupported mutability %s', $mutability));
+            throw new DraftjsException(sprintf('Unsupported mutability "%s"', $mutability));
         }
 
-        $this->mutability = $mutability;
+        $this->mutability = strtoupper($mutability);
 
         return $this;
     }
@@ -109,22 +117,18 @@ class DraftEntity
     }
 
     /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    public static function supportsType($type)
-    {
-        return in_array($type, self::TYPES);
-    }
-
-    /**
      * @param string $mutability
      *
      * @return bool
+     *
+     * @throws DraftjsException
      */
     public static function supportsMutability($mutability)
     {
-        return in_array($mutability, self::MUTABILITY);
+        if (is_null($mutability) || empty($mutability)) {
+            throw new DraftjsException('Unsupported null or empty mutability value');
+        }
+
+        return in_array(strtoupper($mutability), self::MUTABILITY);
     }
 }

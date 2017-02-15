@@ -1,0 +1,5 @@
+{% spaceless %}
+    <figure{% if classNames is not null %} class="{{ classNames }}"{% endif %}>
+        {{ content | raw }}
+    </figure>
+{% endspaceless %}

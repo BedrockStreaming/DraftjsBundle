@@ -9,32 +9,26 @@ namespace M6Web\Bundle\DraftjsBundle\Model;
  */
 class CharacterMetadata
 {
-    const BOLD = 'BOLD';
-    const ITALIC = 'ITALIC';
-    const STRIKETHROUGH = 'STRIKETHROUGH';
-
-    const STYLES = [self::BOLD, self::ITALIC, self::STRIKETHROUGH];
-
     /**
      * @var string $style
      */
     private $styles = [];
 
     /**
-     * @var
+     * @var int $entityIndex
      */
-    private $entity = null;
+    private $entityIndex = null;
 
     /**
      * CharacterMetadata constructor.
      *
      * @param array $styles
-     * @param int   $entity
+     * @param int   $entityIndex
      */
-    public function __construct(array $styles = [], $entity = null)
+    public function __construct(array $styles = [], $entityIndex = null)
     {
         $this->styles = $styles;
-        $this->entity = $entity;
+        $this->entityIndex = $entityIndex;
     }
 
     /**
@@ -80,26 +74,16 @@ class CharacterMetadata
     /**
      * @return null|string
      */
-    public function getEntity()
+    public function getEntityIndex()
     {
-        return $this->entity;
+        return $this->entityIndex;
     }
 
     /**
-     * @param DraftEntity $entity
+     * @param int $entityIndex
      */
-    public function setEntity(DraftEntity $entity = null)
+    public function setEntityIndex($entityIndex)
     {
-        $this->entity = $entity;
-    }
-
-    /**
-     * @param string $style
-     *
-     * @return bool
-     */
-    public static function supportsStyle($style)
-    {
-        return in_array($style, self::STYLES);
+        $this->entityIndex = $entityIndex;
     }
 }

@@ -1,5 +1,3 @@
-{% spaceless %}
-    <{{ tag }}{% if classNames is not null %} class="{{ classNames }}"{% endif %}>
-        {{ content | raw }}
-    </{{ tag }}>
-{% endspaceless %}
+<{{ tag }}{% if classNames is not null %} class="{{ classNames }}"{% endif %}>
+    {{ content | raw }}
+</{{ tag }}>

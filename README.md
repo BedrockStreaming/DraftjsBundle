@@ -234,6 +234,8 @@ use M6Web\Bundle\DraftjsBundle\Model\DraftEntity;
 
 class LinkInlineEntityRenderer extends AbstractInlineEntityRenderer
 {
+    const TAG_NAME = 'a';
+
     use InlineRendererHelperTrait;
 
     /**

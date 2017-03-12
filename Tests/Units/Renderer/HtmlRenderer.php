@@ -18,7 +18,56 @@ class HtmlRenderer extends atoum
      */
     public function testRender()
     {
-        $json = '{"entityMap":{},"blocks":[{"key":"e0vbh","text":"Hello world!","type":"unstyled","depth":0,"inlineStyleRanges":[{"offset":2,"length":2,"style":"BOLD"}],"entityRanges":[],"data":{}}]}';
+        $json = <<<JSON
+{
+    "entityMap":{
+        "0": {
+            "type":"ACME",
+            "mutability":"MUTABLE",
+            "data":{
+                "content": "This is me"
+            }
+        }
+    },
+    "blocks":[
+        {
+            "key":"e0vbh",
+            "text":"Hello world!",
+            "type":"unstyled",
+            "depth":0,
+            "inlineStyleRanges":[
+                {
+                    "offset":2,
+                    "length":2,
+                    "style":"BOLD"
+                }
+            ],
+            "entityRanges":[
+            ],
+            "data":{
+            }
+        },
+        {
+            "key":"7sf8s",
+            "text":"\ud83d\udcf7",
+            "type":"atomic",
+            "depth":0,
+            "inlineStyleRanges":[
+            ],
+            "entityRanges":[
+                {
+                    "offset":0,
+                    "length":1,
+                    "key":"0"
+                }
+            ],
+            "data":{
+            }
+        }
+    ]
+}
+JSON;
+
         $rawState = $this->getRawState($json);
 
         $blockGuesser = $this->getMockBlockGuesser();
@@ -29,7 +78,7 @@ class HtmlRenderer extends atoum
             ->if($renderer = new TestedClass($converter, $builder))
             ->then
                 ->string($renderer->render($rawState))
-                ->isEqualTo('He<span class="bold">ll</span>o world!')
+                ->isEqualTo('He<span class="bold">ll</span>o world!This is me')
             ->then
                 ->mock($converter)->call('convertFromRaw')->withArguments($rawState)->once()
                 ->mock($builder)->call('build')->once()

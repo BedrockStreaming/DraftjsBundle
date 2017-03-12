@@ -89,10 +89,17 @@ class AtomicBlockRenderer extends AbstractBlockRenderer
      * @param array $entities
      *
      * @return null|DraftEntity
+     *
+     * @throws DraftjsException
      */
     protected function getEntity(ContentBlock $contentBlock, array $entities)
     {
         $characterList = $contentBlock->getCharacterList();
+
+        if (!isset($characterList[0])) {
+            throw new DraftjsException(sprintf('Block "%s" with key "%s" is invalid. At least 1 character is required.', self::TYPE, $contentBlock->getKey()));
+        }
+
         $characterMetadata = $characterList[0];
         $index = $characterMetadata->getEntityIndex();
 

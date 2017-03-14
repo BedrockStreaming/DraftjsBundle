@@ -20,7 +20,20 @@ trait TestsContextTrait
     {
         $templating = new \mock\Symfony\Bundle\FrameworkBundle\Templating\EngineInterface();
         $templating->getMockController()->render = function ($filename, $params) {
-            return isset($params['content']) ? $params['content'] : '';
+            $getClassAttribute = function (array $params) {
+                return !empty($params['classNames']) ? sprintf(' class="%s"', $params['classNames']) : '';
+            };
+
+            switch ($filename) {
+                case 'M6WebDraftjsBundle:Block:default.html.twig':
+                    return sprintf('<div%s>%s</div>', $getClassAttribute($params), $params['content']);
+                case 'M6WebDraftjsBundle:Block:atomic.html.twig':
+                    return sprintf('<figure%s>%s</figure>', $getClassAttribute($params), $params['content']);
+                case 'M6WebDraftjsBundle:Block:blockquote.html.twig':
+                    return sprintf('<blockquote%s>%s</blockquote>', $getClassAttribute($params), $params['content']);
+                default:
+                    return $params['content'];
+            }
         };
 
         return $templating;
@@ -61,16 +74,25 @@ trait TestsContextTrait
             $contentRenderer->setInlineClassNames($inlineClassNames);
         }
 
+        // block entity renderer
+        $acmeBlockEntityRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Tests\Renderer\Entity\AcmeBlockEntityRenderer($templating);
+        $acmeBlockEntityRenderer->setClassName('acme-block-entity');
+
         // block entity guesser
         $blockEntityGuesser = new \mock\M6Web\Bundle\DraftjsBundle\Guesser\BlockEntityGuesser();
+        $blockEntityGuesser->addRenderer($acmeBlockEntityRenderer, 'acme_block_entity_renderer');
 
         // add block renderer
         $atomicBlockRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Renderer\Block\AtomicBlockRenderer($contentRenderer, $templating);
+        $atomicBlockRenderer->setBlockClassName('atomic-block');
         $atomicBlockRenderer->setBlockEntityGuesser($blockEntityGuesser);
 
         $defaultBlockRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Renderer\Block\DefaultBlockRenderer($contentRenderer, $templating);
+        $defaultBlockRenderer->setBlockClassName('default-block');
         $headingBlockRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Renderer\Block\HeadingBlockRenderer($contentRenderer, $templating);
+        $headingBlockRenderer->setBlockClassName('heading-block');
         $listBlockRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Renderer\Block\ListBlockRenderer($contentRenderer, $templating);
+        $listBlockRenderer->setBlockClassName('list-block');
 
         $blockGuesser = new \mock\M6Web\Bundle\DraftjsBundle\Guesser\BlockGuesser();
 

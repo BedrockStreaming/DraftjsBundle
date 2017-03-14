@@ -26,7 +26,7 @@ class HtmlBuilder extends atoum
             ->if($builder = new TestedClass($blockGuesser))
             ->then
                 ->string($builder->build($contentState))
-                ->isEqualTo('He<span class="bold italic">ll</span><span class="italic">o wo</span>rld!')
+                ->isEqualTo('<div class="default-block">He<span class="bold italic">ll</span><span class="italic">o wo</span>rld!</div>')
         ;
     }
 
@@ -48,7 +48,7 @@ class HtmlBuilder extends atoum
             ->if($builder = new TestedClass($blockGuesser))
             ->then
                 ->string($builder->build($contentState))
-                ->isEqualTo('He<span class="u-strong custom-class">ll</span><span class="custom-class">o wo</span>rld!')
+                ->isEqualTo('<div class="default-block">He<span class="u-strong custom-class">ll</span><span class="custom-class">o wo</span>rld!</div>')
         ;
     }
 

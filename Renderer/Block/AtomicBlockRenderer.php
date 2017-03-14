@@ -39,30 +39,29 @@ class AtomicBlockRenderer extends AbstractBlockRenderer
      */
     public function render(\ArrayIterator &$iterator, array $entities)
     {
+        /** @var ContentBlock $contentBlock */
         $contentBlock = $iterator->current();
         $iterator->next();
 
+        /** @var DraftEntity $entity */
         $entity = $this->getEntity($contentBlock, $entities);
 
-        if (!$entity) {
-            return '';
-        }
+        $content = $contentBlock->getText();
 
-        $renderer = $this->blockEntityGuesser->getRenderer($entity);
+        if ($entity) {
+            $renderer = $this->blockEntityGuesser->getRenderer($entity);
 
-        if (!$renderer) {
-            throw new DraftjsException(sprintf('Undefined block entity renderer for type "%s"', strtolower($entity->getType())));
-        }
+            if (!$renderer) {
+                throw new DraftjsException(sprintf('Undefined block entity renderer for type "%s"', strtolower($entity->getType())));
+            }
 
-        $content = $renderer->render($entity);
-
-        if (empty($content)) {
-            return $content;
+            $content = $renderer->render($entity);
         }
 
         return $this->templating->render('M6WebDraftjsBundle:Block:default.html.twig', [
             'classNames' => $this->buildClassNames($contentBlock),
             'content' => $content,
+            'data' => $contentBlock->getData(),
         ]);
     }
 
@@ -97,7 +96,7 @@ class AtomicBlockRenderer extends AbstractBlockRenderer
         $characterList = $contentBlock->getCharacterList();
 
         if (!isset($characterList[0])) {
-            throw new DraftjsException(sprintf('Block "%s" with key "%s" is invalid. At least 1 character is required.', self::TYPE, $contentBlock->getKey()));
+            return null;
         }
 
         $characterMetadata = $characterList[0];

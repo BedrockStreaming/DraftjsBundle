@@ -4,7 +4,8 @@
 
 # DraftjsBundle
 
-This Symfony bundle aims to convert [Draft.js](https://github.com/facebook/draft-js) state into an equivalent PHP object model and providing necessary tools for rendering html.
+This Symfony bundle aims to convert [Draft.js](https://github.com/facebook/draft-js) state into an equivalent PHP object
+model and providing necessary tools for rendering html.
 
 ## Installation
 
@@ -115,7 +116,8 @@ We distinguished 3 types of renderer, depending on what you we want to customize
 - [inline entity](#adding-custom-inline-entity-renderer) 
 - [block entity](#adding-custom-block-entity-renderer)
 
-There is also another renderer not listed here, the ContentRenderer responsible of rendering the HTML within a block from text and inline style.
+There is also another renderer not listed here, the ContentRenderer responsible of rendering the HTML within a block
+from text and inline style.
 
 The only things you have to do is to create a service then tagged it as expected.
 
@@ -134,7 +136,8 @@ acme_demo.acme_block_renderer:
         - { name: draftjs.block_renderer, alias: draftjs_acme_block_renderer }
 ```
 
-In order to be fully support by our rendering engine, you must tag your service with draftjs.block_renderer and you must extend AbstractBlockRenderer who implement the BlockRendererInterface interface.
+In order to be fully support by our rendering engine, you must tag your service with draftjs.block_renderer and you must
+extend AbstractBlockRenderer who implement the BlockRendererInterface interface.
 
 Illustration with the AcmeBlockRenderer class:
 
@@ -146,6 +149,8 @@ use M6Web\Bundle\DraftjsBundle\Model\ContentBlock;
 
 class AcmeBlockRenderer extends AbstractBlockRenderer
 {
+    protected $template = ''; // or DemoBundle:Block:acme.html.twig
+
     /**
      * @param \ArrayIterator $iterator
      * @param array          $entities
@@ -155,7 +160,7 @@ class AcmeBlockRenderer extends AbstractBlockRenderer
     public function render(\ArrayIterator &$iterator, array $entities)
     {
         // you have acces to the global iterator of ContentBlock
-        // so just get current item by use curent()
+        // so just get current item by use current()
         $contentBlock = $iterator->current();
 
         // if your renderer is handling the current ContentBlock
@@ -221,7 +226,8 @@ acme_demo.link_inline_entity_renderer:
         - { name: draftjs.inline_entity_renderer, alias: draftjs_link_inline_entity_renderer }
 ```
 
-In order to be fully support by our rendering engine, you must tag your service with draftjs.inline_entity_renderer and you must extend AbstractInlineEntityRenderer who implement the InlineEntityRendererInterface interface.
+In order to be fully support by our rendering engine, you must tag your service with draftjs.inline_entity_renderer and
+you must extend AbstractInlineEntityRenderer who implement the InlineEntityRendererInterface interface.
 
 Illustration with the LinkInlineEntityRenderer class:
 
@@ -314,9 +320,10 @@ acme_demo.acme_block_entity_renderer:
         - { name: draftjs.block_entity_renderer, alias: draftjs_acme_block_entity_renderer }
 ```
 
-In order to be fully support by our rendering engine, you must tag your service with draftjs.block_entity_renderer and you must extend AbstractBlockEntityRenderer who implement the BlockEntityRendererInterface interface.
+In order to be fully support by our rendering engine, you must tag your service with draftjs.block_entity_renderer and
+you must extend AbstractBlockEntityRenderer who implement the BlockEntityRendererInterface interface.
 
-Illustration with the LinkInlineEntityRenderer class:
+Illustration with the AcmeBlockEntityRenderer class:
 
 ```php
 namespace Acme\Bundle\DemoBundle\Renderer\Entity;
@@ -333,10 +340,12 @@ class AcmeBlockEntityRenderer extends AbstractBlockEntityRenderer
      */
     public function render(DraftEntity $entity)
     {
-        // generate content from the entity data
-        $content = 'content of your acme block';
+        $data = $entity->getData();
 
-        return $this->templating->render($this->getTemplate(), [
+        // generate content from the entity data
+        $content = $data['content'];
+
+        return $this->templating->render('DemoBundle:Entity:acme.html.twig', [
             'className' => $this->getClassName(),
             'content' => $content,
         ]);

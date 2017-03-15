@@ -62,7 +62,10 @@ trait TestsContextTrait
         }
 
         // block entity guesser
+        $acmeBlockEntityRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Tests\Fixtures\Renderer\Entity\AcmeBlockEntityRenderer($templating);
+
         $blockEntityGuesser = new \mock\M6Web\Bundle\DraftjsBundle\Guesser\BlockEntityGuesser();
+        $blockEntityGuesser->addRenderer($acmeBlockEntityRenderer, 'acme_block_entity_renderer');
 
         // add block renderer
         $atomicBlockRenderer = new \mock\M6Web\Bundle\DraftjsBundle\Renderer\Block\AtomicBlockRenderer($contentRenderer, $templating);

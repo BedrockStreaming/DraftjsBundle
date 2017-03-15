@@ -39,30 +39,29 @@ class AtomicBlockRenderer extends AbstractBlockRenderer
      */
     public function render(\ArrayIterator &$iterator, array $entities)
     {
+        /** @var ContentBlock $contentBlock */
         $contentBlock = $iterator->current();
         $iterator->next();
 
+        /** @var DraftEntity $entity */
         $entity = $this->getEntity($contentBlock, $entities);
 
-        if (!$entity) {
-            return '';
+        $content = $contentBlock->getText();
+
+        if ($entity) {
+            $renderer = $this->blockEntityGuesser->getRenderer($entity);
+
+            if (!$renderer) {
+                throw new DraftjsException(sprintf('Undefined block entity renderer for type "%s"', strtolower($entity->getType())));
+            }
+
+            $content = $renderer->render($entity);
         }
 
-        $renderer = $this->blockEntityGuesser->getRenderer($entity);
-
-        if (!$renderer) {
-            throw new DraftjsException(sprintf('Undefined block entity renderer for type "%s"', strtolower($entity->getType())));
-        }
-
-        $content = $renderer->render($entity);
-
-        if (empty($content)) {
-            return $content;
-        }
-
-        return $this->templating->render('M6WebDraftjsBundle:Block:default.html.twig', [
+        return $this->templating->render('M6WebDraftjsBundle:Block:atomic.html.twig', [
             'classNames' => $this->buildClassNames($contentBlock),
             'content' => $content,
+            'data' => $contentBlock->getData(),
         ]);
     }
 
@@ -93,6 +92,11 @@ class AtomicBlockRenderer extends AbstractBlockRenderer
     protected function getEntity(ContentBlock $contentBlock, array $entities)
     {
         $characterList = $contentBlock->getCharacterList();
+
+        if (!isset($characterList[0])) {
+            return null;
+        }
+
         $characterMetadata = $characterList[0];
         $index = $characterMetadata->getEntityIndex();
 

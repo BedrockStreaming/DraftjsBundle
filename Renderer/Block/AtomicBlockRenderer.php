@@ -58,7 +58,7 @@ class AtomicBlockRenderer extends AbstractBlockRenderer
             $content = $renderer->render($entity);
         }
 
-        return $this->templating->render('M6WebDraftjsBundle:Block:default.html.twig', [
+        return $this->templating->render('M6WebDraftjsBundle:Block:atomic.html.twig', [
             'classNames' => $this->buildClassNames($contentBlock),
             'content' => $content,
             'data' => $contentBlock->getData(),
@@ -88,8 +88,6 @@ class AtomicBlockRenderer extends AbstractBlockRenderer
      * @param array $entities
      *
      * @return null|DraftEntity
-     *
-     * @throws DraftjsException
      */
     protected function getEntity(ContentBlock $contentBlock, array $entities)
     {

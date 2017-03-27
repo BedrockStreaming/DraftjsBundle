@@ -59,6 +59,7 @@ class ContentRenderer implements RendererInterface
         $output = '';
         $stack = [];
         $previousEntity = null;
+        $tagEntityOpen = false;
         $chars = str_split($text);
 
         foreach ($chars as $index => $char) {
@@ -80,13 +81,25 @@ class ContentRenderer implements RendererInterface
                     $entity = $entities[$previousEntity];
                     $renderer = $this->getInlineEntityRenderer($entity);
                     $output .= $renderer->closeTag();
+
+                    $tagEntityOpen = false;
                 }
 
                 // open entity node
                 if (!is_null($entityIndex) && $entityIndex !== $previousEntity) {
+                    if (!is_null($previousEntity)) {
+                        $entity = $entities[$previousEntity];
+                        $renderer = $this->getInlineEntityRenderer($entity);
+                        $output .= $renderer->closeTag();
+
+                        $tagEntityOpen = false;
+                    }
+
                     $entity = $entities[$entityIndex];
                     $renderer = $this->getInlineEntityRenderer($entity);
                     $output .= $renderer->openTag($entity);
+
+                    $tagEntityOpen = true;
                 }
 
                 // open text node
@@ -101,10 +114,17 @@ class ContentRenderer implements RendererInterface
             $previousEntity = $entityIndex;
         }
 
+        if ($tagEntityOpen && $previousEntity) {
+            $entity = $entities[$previousEntity];
+            $renderer = $this->getInlineEntityRenderer($entity);
+            $output .= $renderer->closeTag();
+
+            $tagEntityOpen = false;
+        }
+
         return $output;
     }
-
-
+    
     /**
      * @param array $classNames
      *

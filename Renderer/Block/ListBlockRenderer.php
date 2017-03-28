@@ -91,15 +91,18 @@ class ListBlockRenderer extends AbstractBlockRenderer
         };
 
         $previousDepth = null;
+        
         foreach ($extractedItems as $index => $contentBlock) {
             $depth = $contentBlock->getDepth();
 
             $textAlignment = $this->getTextAlignment($contentBlock);
             $childClassNames = $textAlignment ? $this->getTextAlignmentClassName($textAlignment) : '';
-
+            
             if (0 === $depth) {
                 if ($previousDepth) {
-                    $closePreviousDepth($depth, $previousDepth, $output);
+                    $closePreviousDepth($depth, $previousDepth, $output);    
+                }
+                if ($previousDepth !== null) {
                     $output .= $this->closeChildTag();
                 }
                 $output .= $this->openChildTag($childClassNames);
@@ -114,13 +117,15 @@ class ListBlockRenderer extends AbstractBlockRenderer
                 $output .= $this->closeChildTag();
                 $output .= $this->openChildTag($childClassNames);
             }
-
+            
             $output .= $this->contentRenderer->render($contentBlock->getText(), $contentBlock->getCharacterList(), $entities);
             $previousDepth = $depth;
         }
-
-        $output .= $this->closeListTag($type);
-
+        $output .= $this->closeChildTag();
+        for ( $i = 0; $i <= $previousDepth; $i++) {
+            $output .= $this->closeListTag($type);
+        }
+        
         return $output;
     }
 

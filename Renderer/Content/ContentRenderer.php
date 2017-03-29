@@ -74,7 +74,7 @@ class ContentRenderer implements RendererInterface
                 if ($currentDepth > 0) {
                     $output .= $this->closeTag();
                 }
-                
+
                 // close entity node
                 if (!is_null($previousEntity) && $entityIndex !== $previousEntity) {
                     $entity = $entities[$previousEntity];
@@ -103,7 +103,6 @@ class ContentRenderer implements RendererInterface
 
         return $output;
     }
-
 
     /**
      * @param array $classNames

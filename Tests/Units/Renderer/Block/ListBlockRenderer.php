@@ -36,7 +36,7 @@ class ListBlockRenderer extends atoum
             ->if($renderer = new TestedClass($contentRender, $templating))
             ->then
                 ->string($renderer->render($iterator, []))
-                ->isEqualTo('<ul><li>Hello</li><li>World<ul><li>Hello World!</li></ul></ul>')
+                ->isEqualTo('<ul><li>Hello</li><li>World<ul><li>Hello World!</li></ul></li></ul>')
         ;
     }
 }

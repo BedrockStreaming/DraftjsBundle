@@ -59,7 +59,7 @@ class ContentRenderer implements RendererInterface
         $output = '';
         $stack = [];
         $previousEntity = null;
-        $chars = str_split($text);
+        $chars = preg_split('/(?<!^)(?!$)/u', $text );
 
         foreach ($chars as $index => $char) {
             $characterMetadata = $characterList[$index];
@@ -76,7 +76,7 @@ class ContentRenderer implements RendererInterface
                 }
 
                 // close entity node
-                if (is_null($entityIndex) && $entityIndex !== $previousEntity) {
+                if (!is_null($previousEntity) && $entityIndex !== $previousEntity) {
                     $entity = $entities[$previousEntity];
                     $renderer = $this->getInlineEntityRenderer($entity);
                     $output .= $renderer->closeTag();
@@ -103,7 +103,6 @@ class ContentRenderer implements RendererInterface
 
         return $output;
     }
-
 
     /**
      * @param array $classNames

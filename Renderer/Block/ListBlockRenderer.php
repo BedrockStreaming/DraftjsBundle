@@ -99,7 +99,9 @@ class ListBlockRenderer extends AbstractBlockRenderer
 
             if (0 === $depth) {
                 if ($previousDepth) {
-                    $closePreviousDepth($depth, $previousDepth, $output);
+                    $closePreviousDepth($depth, $previousDepth, $output);    
+                }
+                if ($previousDepth !== null) {
                     $output .= $this->closeChildTag();
                 }
                 $output .= $this->openChildTag($childClassNames);
@@ -118,9 +120,11 @@ class ListBlockRenderer extends AbstractBlockRenderer
             $output .= $this->contentRenderer->render($contentBlock->getText(), $contentBlock->getCharacterList(), $entities);
             $previousDepth = $depth;
         }
-
-        $output .= $this->closeListTag($type);
-
+        for ($i = 0; $i <= $previousDepth; $i++) {
+            $output .= $this->closeChildTag();
+            $output .= $this->closeListTag($type);
+        }
+        
         return $output;
     }
 
